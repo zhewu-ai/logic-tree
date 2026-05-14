@@ -84,7 +84,7 @@ export function cloneTree(tree: TreeNode): TreeNode | null {
     sketchElements: tree.sketchElements ? tree.sketchElements.map(s => ({...s})) : undefined,
     sketchW: tree.sketchW,
     sketchH: tree.sketchH,
-    children: (tree.children || []).map(c => cloneTree(c, newId)).filter((n): n is TreeNode => n !== null),
+    children: (tree.children || []).map(c => cloneTree(c)).filter((n): n is TreeNode => n !== null),
   }
 }
 

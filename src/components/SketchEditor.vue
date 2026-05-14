@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, watch } from 'vue'
+import { ref, computed, reactive, watch, onMounted } from 'vue'
 import type { SketchElement } from '../types'
 
 const props = defineProps<{
@@ -77,7 +77,7 @@ function undo() {
   localElements.value = history.value[historyIdx.value].map(e => ({ ...e }))
 }
 function redo() {
-  if (historyIdx.value >= history.length - 1) return
+  if (historyIdx.value >= history.value.length - 1) return
   historyIdx.value++
   localElements.value = history.value[historyIdx.value].map(e => ({ ...e }))
 }
@@ -389,7 +389,10 @@ function applyColor(c: string) {
 // Selected element data
 const selectedEl = computed(() => localElements.value.find(e => e.id === selectedId.value))
 
-import { onMounted } from 'vue'
+function updateSelectedElement(patch: Partial<SketchElement>) {
+  const el = selectedEl.value
+  if (el) updateElement(el.id, patch)
+}
 </script>
 
 <template>
@@ -505,7 +508,7 @@ import { onMounted } from 'vue'
       </div>
 
       <!-- Canvas -->
-      <div class="sketch-canvas-wrap" @wheel.prevent="(e: WheelEvent) => { const factor = e.deltaY < 0 ? 1.05 : 0.95; setZoom(zoom.value * factor) }">
+      <div class="sketch-canvas-wrap" @wheel.prevent="(e: WheelEvent) => { const factor = e.deltaY < 0 ? 1.05 : 0.95; setZoom(zoom * factor) }">
         <svg
           ref="svgRef"
           class="sketch-svg"
@@ -572,36 +575,36 @@ import { onMounted } from 'vue'
         <div class="sketch-props-title">属性</div>
         <div class="sketch-props-section">
           <label class="sketch-prop-label">X</label>
-          <input type="range" class="sketch-prop-slider" min="0" :max="canvasW" :value="Math.round(selectedEl.x)" @input="(e: any) => updateElement(selectedEl.id, { x: parseInt(e.target.value) })" />
+          <input type="range" class="sketch-prop-slider" min="0" :max="canvasW" :value="Math.round(selectedEl.x)" @input="(e: any) => updateSelectedElement({ x: parseInt(e.target.value) })" />
           <span class="sketch-prop-val">{{ Math.round(selectedEl.x) }}</span>
         </div>
         <div class="sketch-props-section">
           <label class="sketch-prop-label">Y</label>
-          <input type="range" class="sketch-prop-slider" min="0" :max="canvasH" :value="Math.round(selectedEl.y)" @input="(e: any) => updateElement(selectedEl.id, { y: parseInt(e.target.value) })" />
+          <input type="range" class="sketch-prop-slider" min="0" :max="canvasH" :value="Math.round(selectedEl.y)" @input="(e: any) => updateSelectedElement({ y: parseInt(e.target.value) })" />
           <span class="sketch-prop-val">{{ Math.round(selectedEl.y) }}</span>
         </div>
         <div v-if="selectedEl.w !== undefined" class="sketch-props-section">
           <label class="sketch-prop-label">宽</label>
-          <input type="range" class="sketch-prop-slider" min="10" :max="canvasW" :value="Math.round(selectedEl.w)" @input="(e: any) => updateElement(selectedEl.id, { w: parseInt(e.target.value) })" />
+          <input type="range" class="sketch-prop-slider" min="10" :max="canvasW" :value="Math.round(selectedEl.w)" @input="(e: any) => updateSelectedElement({ w: parseInt(e.target.value) })" />
           <span class="sketch-prop-val">{{ Math.round(selectedEl.w) }}</span>
         </div>
         <div v-if="selectedEl.h !== undefined" class="sketch-props-section">
           <label class="sketch-prop-label">高</label>
-          <input type="range" class="sketch-prop-slider" min="10" :max="canvasH" :value="Math.round(selectedEl.h)" @input="(e: any) => updateElement(selectedEl.id, { h: parseInt(e.target.value) })" />
+          <input type="range" class="sketch-prop-slider" min="10" :max="canvasH" :value="Math.round(selectedEl.h)" @input="(e: any) => updateSelectedElement({ h: parseInt(e.target.value) })" />
           <span class="sketch-prop-val">{{ Math.round(selectedEl.h) }}</span>
         </div>
         <div v-if="selectedEl.type === 'rect'" class="sketch-props-section">
           <label class="sketch-prop-label">圆角</label>
-          <input class="sketch-prop-input" type="range" min="0" max="50" :value="selectedEl.rx ?? 4" @input="(e: any) => updateElement(selectedEl.id, { rx: parseInt(e.target.value) })" />
+          <input class="sketch-prop-input" type="range" min="0" max="50" :value="selectedEl.rx ?? 4" @input="(e: any) => updateSelectedElement({ rx: parseInt(e.target.value) })" />
           <span class="sketch-prop-val">{{ selectedEl.rx ?? 4 }}</span>
         </div>
         <div v-if="selectedEl.r !== undefined" class="sketch-props-section">
           <label class="sketch-prop-label">半径</label>
-          <input class="sketch-prop-input" :value="Math.round(selectedEl.r)" @change="(e: any) => updateElement(selectedEl.id, { r: parseFloat(e.target.value) || 0 })" />
+          <input class="sketch-prop-input" :value="Math.round(selectedEl.r)" @change="(e: any) => updateSelectedElement({ r: parseFloat(e.target.value) || 0 })" />
         </div>
         <div class="sketch-props-section">
           <label class="sketch-prop-label">文字</label>
-          <input class="sketch-prop-input sketch-prop-input-wide" :value="selectedEl.text || ''" @change="(e: any) => updateElement(selectedEl.id, { text: e.target.value })" />
+          <input class="sketch-prop-input sketch-prop-input-wide" :value="selectedEl.text || ''" @change="(e: any) => updateSelectedElement({ text: e.target.value })" />
         </div>
       </div>
     </div>

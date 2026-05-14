@@ -5,7 +5,7 @@ import { Background, BackgroundVariant } from '@vue-flow/background'
 import WindowNode from './nodes/WindowNode.vue'
 import type { LogicNodeData, NodeType } from '../types'
 import { NODE_TYPES } from '../types'
-import { createNode, genId } from '../utils/treeUtils'
+import { createNode } from '../utils/treeUtils'
 import { calcLayout } from '../utils/layout'
 import type { Node, Edge, ViewportTransform, NodeChange, EdgeChange } from '@vue-flow/core'
 
@@ -22,7 +22,7 @@ const emit = defineEmits<{
 
 const nodes = ref<Node[]>([])
 const edges = ref<Edge[]>([])
-const nodeTypes = markRaw({ window: WindowNode })
+const nodeTypes = markRaw({ window: WindowNode }) as any
 
 // Track viewport transform for coordinate conversion
 const viewport = ref<ViewportTransform>({ x: 0, y: 0, zoom: 1 })

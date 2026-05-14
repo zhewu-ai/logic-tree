@@ -355,7 +355,7 @@ function startRename(tabId: string, currentName: string) {
   editingTabName.value = currentName
 }
 
-function confirmRename(input: HTMLInputElement) {
+function confirmRename() {
   const name = editingTabName.value.trim()
   const tab = tabs.value.find(t => t.id === editingTabId.value)
   if (tab && name) tab.name = name
@@ -571,9 +571,9 @@ function handleDeleteNodes(ids: string[]) {
             v-if="editingTabId === tab.id"
             v-model="editingTabName"
             class="tab-rename-input"
-            @keydown.enter="confirmRename($event.target)"
+            @keydown.enter="confirmRename"
             @keydown.escape="cancelRename"
-            @blur="confirmRename($event.target)"
+            @blur="confirmRename"
             @click.stop
           />
           <span v-else class="tab-name" @dblclick="startRename(tab.id, tab.name)">{{ tab.name }}</span>
