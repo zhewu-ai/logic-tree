@@ -13,6 +13,8 @@ const treeVersion = ref(0)
 const selectedNodeId = ref<string | null>(null)
 const showEditorPanel = ref(true)
 const showJsonPanel = ref(false)
+const showIntro = ref(true)
+const introLang = ref<'zh' | 'en'>('en')
 const fileInputRef = ref<HTMLInputElement | null>(null)
 
 const jsonCopied = ref(false)
@@ -29,6 +31,7 @@ const selectedNode = computed(() =>
   selectedNodeId.value ? nodeMap.get(selectedNodeId.value) || null : null,
 )
 const trees = computed(() => toTrees(nodeMap))
+const introIsZh = computed(() => introLang.value === 'zh')
 
 function bump() { treeVersion.value++ }
 function handleSelectNode(id: string | null) { selectedNodeId.value = id }
@@ -482,7 +485,125 @@ function handleDeleteNodes(ids: string[]) {
 </script>
 
 <template>
-  <div class="app" @keydown="handleKeydown">
+  <div v-if="showIntro" class="intro-page">
+    <header class="intro-header">
+      <div class="intro-logo">
+        <span class="intro-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="4" r="2.5"/>
+            <circle cx="5" cy="18" r="2.5"/>
+            <circle cx="19" cy="18" r="2.5"/>
+            <path d="M10 6.5L7 16"/>
+            <path d="M14 6.5L17 16"/>
+          </svg>
+        </span>
+        <span>LogicTree</span>
+      </div>
+      <div class="intro-actions">
+        <div class="language-switch" aria-label="Language switch">
+          <button :class="{ active: introLang === 'en' }" @click="introLang = 'en'">EN</button>
+          <button :class="{ active: introLang === 'zh' }" @click="introLang = 'zh'">中文</button>
+        </div>
+        <button class="intro-open-btn" @click="showIntro = false">
+          {{ introIsZh ? '进入工具' : 'Open App' }}
+        </button>
+      </div>
+    </header>
+
+    <main class="intro-main">
+      <section class="intro-hero">
+        <div class="intro-copy">
+          <p class="intro-kicker">
+            {{ introIsZh ? 'AI 协作前的结构化表达工具' : 'Structured thinking before AI execution' }}
+          </p>
+          <h1>
+            {{ introIsZh ? '把复杂想法整理成 AI 和人都能读懂的逻辑树。' : 'Turn complex ideas into logic trees that humans and AI can both understand.' }}
+          </h1>
+          <p class="intro-lead">
+            {{ introIsZh
+              ? 'LogicTree 把产品想法、需求拆解、条件分支、页面结构和交互草图放到同一张可编辑画布里，让沟通从长文本变成清晰的结构。'
+              : 'LogicTree brings product ideas, requirement breakdowns, decision branches, page structures, and rough interaction sketches into one editable canvas, so planning becomes visible before implementation starts.' }}
+          </p>
+          <div class="intro-cta-row">
+            <button class="intro-primary" @click="showIntro = false">
+              {{ introIsZh ? '开始使用 LogicTree' : 'Start Using LogicTree' }}
+            </button>
+            <a class="intro-secondary" href="https://github.com/zhewu-ai/logic-tree" target="_blank" rel="noreferrer">
+              {{ introIsZh ? '查看 GitHub' : 'View on GitHub' }}
+            </a>
+          </div>
+        </div>
+
+        <div class="intro-visual" aria-hidden="true">
+          <div class="visual-toolbar">
+            <span></span><span></span><span></span>
+            <strong>{{ introIsZh ? '产品逻辑画布' : 'Product logic canvas' }}</strong>
+          </div>
+          <div class="visual-canvas">
+            <div class="visual-node node-main">{{ introIsZh ? 'AI 产品想法' : 'AI product idea' }}</div>
+            <div class="visual-line visual-line-a"></div>
+            <div class="visual-line visual-line-b"></div>
+            <div class="visual-line visual-line-c"></div>
+            <div class="visual-node node-a">{{ introIsZh ? '需求拆解' : 'Requirements' }}</div>
+            <div class="visual-node node-b">{{ introIsZh ? '条件分支' : 'Decisions' }}</div>
+            <div class="visual-node node-c">{{ introIsZh ? '界面草图' : 'UI sketch' }}</div>
+            <div class="visual-sketch">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="intro-section">
+        <div class="section-heading">
+          <p>{{ introIsZh ? '解决的痛点' : 'Pain Points' }}</p>
+          <h2>{{ introIsZh ? '长聊天和散文档，很难承载复杂逻辑。' : 'Long chats and scattered docs are weak containers for complex logic.' }}</h2>
+        </div>
+        <div class="pain-grid">
+          <article>
+            <span>01</span>
+            <h3>{{ introIsZh ? '上下文容易丢失' : 'Context gets lost' }}</h3>
+            <p>{{ introIsZh ? '多轮 AI 对话后，需求、判断条件和设计意图会散落在不同消息里。' : 'After several AI conversations, requirements, conditions, and intent are spread across disconnected messages.' }}</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>{{ introIsZh ? '结构不够可见' : 'Structure stays hidden' }}</h3>
+            <p>{{ introIsZh ? '页面、模块、组件、动作和分支混在文字里，人和 AI 都容易理解偏差。' : 'Pages, modules, components, actions, and branches are mixed into text, which makes misunderstanding likely.' }}</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>{{ introIsZh ? '图和 AI 之间断开' : 'Diagrams are not AI-ready' }}</h3>
+            <p>{{ introIsZh ? '普通画图工具适合展示，但不适合作为 AI 能直接读取、修改和生成的结构化上下文。' : 'Drawing tools are good for presentation, but they rarely become structured context that AI can read, modify, and generate.' }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="intro-section intro-split">
+        <div class="section-heading">
+          <p>{{ introIsZh ? '核心价值' : 'Core Value' }}</p>
+          <h2>{{ introIsZh ? '先把逻辑整理清楚，再让 AI 执行。' : 'Clarify the logic first, then let AI execute.' }}</h2>
+        </div>
+        <div class="feature-list">
+          <div>
+            <h3>{{ introIsZh ? '可视化逻辑树' : 'Visual logic tree' }}</h3>
+            <p>{{ introIsZh ? '用节点和连线表达产品结构、用户路径、业务规则和执行动作。' : 'Use nodes and links to express product structure, user journeys, business rules, and execution steps.' }}</p>
+          </div>
+          <div>
+            <h3>{{ introIsZh ? 'AI 友好的 JSON 结构' : 'AI-friendly JSON structure' }}</h3>
+            <p>{{ introIsZh ? '画布可以导出为结构化数据，让 AI 不必猜截图或长文本背后的真实关系。' : 'Export the canvas as structured data so AI does not need to guess relationships from screenshots or long prose.' }}</p>
+          </div>
+          <div>
+            <h3>{{ introIsZh ? '草图和逻辑放在一起' : 'Sketches connected to logic' }}</h3>
+            <p>{{ introIsZh ? '在节点里记录界面草图、布局想法和交互说明，让早期设计更容易传达。' : 'Keep rough UI sketches, layout ideas, and interaction notes connected to the exact logic they explain.' }}</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div v-else class="app" @keydown="handleKeydown">
     <Sidebar @add-node="handleAddNode" />
 
     <div class="main">
@@ -549,6 +670,9 @@ function handleDeleteNodes(ids: string[]) {
           </button>
         </div>
         <div class="topnav-right">
+          <button class="topnav-btn topnav-toggle" @click="showIntro = true">
+            {{ introIsZh ? '简介' : 'About' }}
+          </button>
           <button class="topnav-btn topnav-toggle" @click="showEditorPanel = !showEditorPanel">
             {{ showEditorPanel ? '▸ 属性' : '◂ 属性' }}
           </button>
@@ -634,6 +758,400 @@ function handleDeleteNodes(ids: string[]) {
 </template>
 
 <style scoped>
+.intro-page {
+  min-height: 100vh;
+  overflow-y: auto;
+  background: #f6f8fb;
+  color: #182033;
+}
+
+.intro-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  padding: 0 40px;
+  background: rgba(246, 248, 251, 0.94);
+  border-bottom: 1px solid #dbe2ea;
+  backdrop-filter: blur(14px);
+}
+
+.intro-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #101828;
+}
+
+.intro-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #182033;
+  color: #8ee5d1;
+}
+
+.intro-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 3px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.language-switch button {
+  min-width: 50px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.language-switch button.active {
+  background: #182033;
+  color: #ffffff;
+}
+
+.intro-open-btn,
+.intro-primary,
+.intro-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 750;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.intro-open-btn {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid #182033;
+  background: #182033;
+  color: #ffffff;
+}
+
+.intro-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 72px 28px 84px;
+}
+
+.intro-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.9fr);
+  align-items: center;
+  gap: 56px;
+  min-height: calc(100vh - 168px);
+}
+
+.intro-copy {
+  max-width: 660px;
+}
+
+.intro-kicker,
+.section-heading p {
+  margin-bottom: 14px;
+  color: #0f766e;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.intro-copy h1 {
+  margin: 0;
+  max-width: 780px;
+  color: #101828;
+  font-size: 58px;
+  line-height: 1.04;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+
+.intro-lead {
+  margin-top: 22px;
+  max-width: 620px;
+  color: #475467;
+  font-size: 19px;
+  line-height: 1.68;
+}
+
+.intro-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.intro-primary {
+  padding: 0 20px;
+  border: 1px solid #182033;
+  background: #182033;
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(24, 32, 51, 0.18);
+}
+
+.intro-secondary {
+  padding: 0 18px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #182033;
+}
+
+.intro-visual {
+  min-height: 440px;
+  overflow: hidden;
+  border: 1px solid #d1d9e6;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(16, 24, 40, 0.14);
+}
+
+.visual-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475467;
+  font-size: 12px;
+}
+
+.visual-toolbar span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+
+.visual-toolbar span:nth-child(2) {
+  background: #f59e0b;
+}
+
+.visual-toolbar span:nth-child(3) {
+  margin-right: 8px;
+  background: #22c55e;
+}
+
+.visual-toolbar strong {
+  font-weight: 750;
+}
+
+.visual-canvas {
+  position: relative;
+  height: 396px;
+  background:
+    linear-gradient(#edf2f7 1px, transparent 1px),
+    linear-gradient(90deg, #edf2f7 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.visual-node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 132px;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #182033;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.1);
+}
+
+.node-main {
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-color: #182033;
+  background: #182033;
+  color: #ffffff;
+}
+
+.node-a {
+  top: 174px;
+  left: 34px;
+}
+
+.node-b {
+  top: 174px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-color: #14b8a6;
+  background: #ecfeff;
+}
+
+.node-c {
+  top: 174px;
+  right: 34px;
+}
+
+.visual-line {
+  position: absolute;
+  height: 2px;
+  background: #94a3b8;
+  transform-origin: left center;
+}
+
+.visual-line-a {
+  top: 142px;
+  left: 50%;
+  width: 170px;
+  transform: rotate(145deg);
+}
+
+.visual-line-b {
+  top: 96px;
+  left: 50%;
+  width: 78px;
+  transform: rotate(90deg);
+}
+
+.visual-line-c {
+  top: 142px;
+  left: 50%;
+  width: 170px;
+  transform: rotate(35deg);
+}
+
+.visual-sketch {
+  position: absolute;
+  right: 42px;
+  bottom: 34px;
+  width: 184px;
+  height: 96px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff7ed;
+}
+
+.visual-sketch span {
+  position: absolute;
+  border: 1px solid #fb923c;
+  border-radius: 5px;
+  background: rgba(251, 146, 60, 0.12);
+}
+
+.visual-sketch span:nth-child(1) {
+  top: 16px;
+  left: 16px;
+  width: 56px;
+  height: 58px;
+}
+
+.visual-sketch span:nth-child(2) {
+  top: 16px;
+  right: 16px;
+  width: 78px;
+  height: 22px;
+}
+
+.visual-sketch span:nth-child(3) {
+  right: 16px;
+  bottom: 18px;
+  width: 78px;
+  height: 28px;
+}
+
+.intro-section {
+  padding: 72px 0 0;
+}
+
+.section-heading {
+  max-width: 760px;
+}
+
+.section-heading h2 {
+  color: #101828;
+  font-size: 34px;
+  line-height: 1.18;
+  letter-spacing: 0;
+}
+
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.pain-grid article,
+.feature-list > div {
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 24px;
+}
+
+.pain-grid span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 28px;
+  margin-bottom: 22px;
+  border-radius: 6px;
+  background: #e0f2fe;
+  color: #075985;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.pain-grid h3,
+.feature-list h3 {
+  margin: 0 0 10px;
+  color: #182033;
+  font-size: 18px;
+}
+
+.pain-grid p,
+.feature-list p {
+  color: #5f6c80;
+  font-size: 15px;
+  line-height: 1.62;
+}
+
+.intro-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.feature-list {
+  display: grid;
+  gap: 14px;
+}
+
 .app {
   display: flex;
   height: 100vh;
@@ -918,5 +1436,115 @@ function handleDeleteNodes(ids: string[]) {
   font-size: 13px;
   font-weight: 600;
   color: #64748b;
+}
+
+@media (max-width: 980px) {
+  .intro-header {
+    padding: 0 18px;
+  }
+
+  .intro-main {
+    padding: 44px 18px 64px;
+  }
+
+  .intro-hero,
+  .intro-split {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .intro-copy h1 {
+    font-size: 42px;
+  }
+
+  .intro-visual {
+    min-height: 380px;
+  }
+
+  .visual-canvas {
+    height: 336px;
+  }
+
+  .pain-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .intro-header {
+    height: auto;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .intro-actions,
+  .intro-cta-row {
+    width: 100%;
+  }
+
+  .language-switch {
+    flex: 1;
+  }
+
+  .language-switch button {
+    flex: 1;
+  }
+
+  .intro-open-btn,
+  .intro-primary,
+  .intro-secondary {
+    flex: 1;
+  }
+
+  .intro-copy h1 {
+    font-size: 34px;
+  }
+
+  .intro-lead {
+    font-size: 16px;
+  }
+
+  .intro-cta-row {
+    flex-direction: column;
+  }
+
+  .intro-visual {
+    min-height: 320px;
+  }
+
+  .visual-canvas {
+    height: 276px;
+  }
+
+  .visual-node {
+    min-width: 104px;
+    height: 42px;
+    font-size: 11px;
+  }
+
+  .node-a {
+    left: 16px;
+  }
+
+  .node-c {
+    right: 16px;
+  }
+
+  .visual-line-a,
+  .visual-line-c {
+    width: 120px;
+  }
+
+  .visual-sketch {
+    right: 18px;
+    bottom: 20px;
+    width: 150px;
+  }
+
+  .section-heading h2 {
+    font-size: 27px;
+  }
 }
 </style>
