@@ -1,4 +1,70 @@
-# AI 节点交互看板 LogicTree
+# LogicTree
+
+> Visual logic maps for AI collaboration, product planning, and complex workflow design.
+
+LogicTree is a browser-based visual thinking tool that turns scattered product ideas, AI prompts, decision branches, user flows, and rough UI sketches into one editable logic tree. It is built for people who need to explain complex ideas clearly before writing code, creating specs, or asking AI to help.
+
+Live demo:
+
+https://zhewu-ai.github.io/logic-tree/
+
+## What Problem Does LogicTree Solve?
+
+When teams work with AI, product requirements, or complex workflows, the hardest part is often not writing more text. The hard part is keeping the structure visible.
+
+Traditional notes, chat logs, and plain documents quickly become hard to follow:
+
+- Ideas are scattered across long conversations.
+- Product logic is mixed with implementation details.
+- Decision branches are difficult to compare.
+- UI concepts are separated from the reasoning behind them.
+- AI assistants receive incomplete context and often misunderstand the real intent.
+
+LogicTree solves this by putting text, hierarchy, branches, page structure, and sketch-level interaction ideas into the same canvas. The result is a shared visual context that both humans and AI can understand.
+
+## Why It Is Useful
+
+LogicTree helps you move from vague ideas to structured execution.
+
+You can use it to:
+
+- Break down a product idea into clear modules.
+- Map user journeys, feature logic, and decision flows.
+- Prepare better prompts and context for AI coding assistants.
+- Explain business rules or interface behavior to collaborators.
+- Turn early-stage thinking into a readable planning artifact.
+- Keep product logic, UX structure, and implementation notes connected.
+
+Instead of sending AI a long paragraph and hoping it understands the architecture, you can first organize the logic visually, then use that structure as a stronger source of context.
+
+## Key Features
+
+- Visual tree editor for structured thinking.
+- Multiple node types for text, feature modules, pages, workflows, and sketches.
+- Drag-and-drop canvas interaction.
+- Editable node titles, descriptions, and hierarchy.
+- Sketch editor for quick interface and interaction ideas.
+- Import and export support for project data.
+- Local-first browser experience with no backend requirement.
+- GitHub Pages deployment for quick online access.
+
+## Typical Use Cases
+
+- AI-assisted product planning.
+- Requirement breakdown before coding.
+- Startup idea exploration.
+- UX flow and page structure mapping.
+- Prompt engineering and context preparation.
+- Complex decision-tree visualization.
+- Personal knowledge organization.
+
+## Tech Stack
+
+LogicTree is built with Vue 3, TypeScript, Vite, Vue Flow, and modern browser APIs.
+
+---
+
+## 中文介绍
 
 LogicTree 是一个面向产品设计、AI 协作和复杂流程梳理的可视化逻辑树工具。它把「文字说明」「业务分支」「页面结构」「交互草图」放到同一张可编辑画布里，让人和 AI 都能读懂同一份结构化表达。
 
